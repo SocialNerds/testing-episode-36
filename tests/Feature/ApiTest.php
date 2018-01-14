@@ -20,9 +20,10 @@ class ApiTest extends TestCase
      */
     public function testCanCreateABook()
     {
+        // Create a user.
         $user = factory(User::class)->create();
 
-
+        // Create a book.
         $response = $this->actingAs($user, 'api')->json(
           'POST',
           '/api/books',
@@ -37,6 +38,7 @@ class ApiTest extends TestCase
 
         $response->assertStatus(201);
 
+        // Get books.
         $response = $this->actingAs($user, 'api')
           ->get('/api/books');
 
@@ -49,6 +51,7 @@ class ApiTest extends TestCase
             ]
           );
 
+        // Delete a book.
         $response = $this->actingAs($user, 'api')
           ->delete('/api/books/'.$bookId);
 
@@ -65,7 +68,7 @@ class ApiTest extends TestCase
           ->assertJsonFragment(['data' => []]);
 
 
-        // User doesnt has favorites.
+        // User doesn't has favorites.
         $response = $this->actingAs($user2, 'api')->json(
           'GET',
           '/api/favorites'
@@ -78,10 +81,11 @@ class ApiTest extends TestCase
             ]
           );
 
+        // Create two books.
         $book1 = factory(Book::class)->create();
         $book2 = factory(Book::class)->create();
-        $book3 = factory(Book::class)->create();
 
+        // Add to favorites.
         $response = $this->actingAs($user2, 'api')->json(
           'POST',
           '/api/favorites',
@@ -91,6 +95,7 @@ class ApiTest extends TestCase
         $response->assertStatus(201)
           ->assertSeeText('Added');
 
+        // Add to favorites.
         $response = $this->actingAs($user2, 'api')->json(
           'POST',
           '/api/favorites',
@@ -138,6 +143,7 @@ class ApiTest extends TestCase
           ->assertJson($data, false)
           ->assertJsonCount(2);
 
+        // Delete from favorites.
         $response = $this->actingAs($user, 'api')->json(
           'DELETE',
           '/api/favorites/' . $book1->id

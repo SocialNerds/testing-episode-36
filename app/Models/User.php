@@ -31,6 +31,9 @@ class User extends Authenticatable
         'password', 'remember_token', 'pivot'
     ];
 
+    /**
+     * Favorites relationship.
+     */
     public function favorites() {
         return $this->belongsToMany('App\Models\Book', 'favorites');
     }
